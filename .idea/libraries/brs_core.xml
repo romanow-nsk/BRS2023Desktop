@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="brs_core">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../brs_core/out/artifacts/brs_core_jar/brs_core.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
