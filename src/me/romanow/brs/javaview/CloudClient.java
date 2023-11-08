@@ -263,34 +263,43 @@ public class CloudClient extends ClientBase {
              DBConnection conn2 = new DBConnection();
              conn2.connect(entry);
              CIUPerson oo = persons.getTutor();
-             DBItem xx[] = conn2.getByName(DBTutor.class, name);
-             if (xx.length != 1) {
-                 MES.setText("Преподаватель не найден в БД");
-                 conn2.close();
-                 return;
-             }
-             tutorItem = (DBTutor) xx[0];
-             if (oo != null) {
-                if (tutorItem.getCiuName().length()==0) {
-                    tutorItem.setCiuName(oo.FAMILY_NAME + " " + oo.NAME);
-                    conn2.update(tutorItem);
-                    }
-                }
-            else{
-                if (tutorItem.getPass().length() == 0){
-                    MES.setText(errMessage+" Нет локального пароля");
+             if (name.equals(Values.dbUser) && pass.equals(Values.dbPass)){
+                 tutorItem = new DBTutor();
+                 tutorItem.setAdmin(true);
+                 tutorItem.setName(name);
+                 tutorItem.setPass(pass);
+                 logonTutor();
+                 }
+             else{
+                 DBItem xx[] = conn2.getByName(DBTutor.class, name);
+                 if (xx.length != 1) {
+                    MES.setText("Преподаватель не найден в БД");
                     conn2.close();
                     return;
                     }
-                if (!tutorItem.getPass().equals(pass)){
-                    MES.setText("Неправильный локальный пароль");
-                    conn2.close();
-                    return;
+                tutorItem = (DBTutor) xx[0];
+                if (oo != null) {
+                    if (tutorItem.getCiuName().length()==0) {
+                        tutorItem.setCiuName(oo.FAMILY_NAME + " " + oo.NAME);
+                        conn2.update(tutorItem);
+                        }
                     }
-                }
+                else{
+                    if (tutorItem.getPass().length() == 0){
+                        MES.setText(errMessage+" Нет локального пароля");
+                        conn2.close();
+                        return;
+                        }
+                    if (!tutorItem.getPass().equals(pass)){
+                        MES.setText("Неправильный локальный пароль");
+                        conn2.close();
+                        return;
+                        }
+                    }
                 MES.setText(tutorItem.getCiuName());
                 logonTutor();
                 return;
+                }
             }
         catch(Throwable e1){ 
             MES.setText(e1.toString()); 
