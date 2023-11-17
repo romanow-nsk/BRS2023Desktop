@@ -197,7 +197,7 @@ public class StudentWindow extends javax.swing.JFrame {
         if (path==null) return;
         String s="";
         try	{
-            BufferedReader si=new BufferedReader(new InputStreamReader(new FileInputStream(path),"Windows-1251"));
+            BufferedReader si=new BufferedReader(new InputStreamReader(new FileInputStream(path),"UTF-8"));
             parent.conn.deleteLinked(DBStudent.class, parent.groupItem);
             while (true){
             	String ss=si.readLine();
@@ -205,10 +205,13 @@ public class StudentWindow extends javax.swing.JFrame {
             	if (ss.length()==0) continue;
                 char cc[]=ss.toCharArray();
                 int i=0;
-                for(i=0;i < cc.length && (cc[i]==' ' || cc[i]==0x09 || cc[i]>='0' && cc[i]<='9');i++);
+                for(i=0;i < cc.length && (cc[i]==' ' || cc[i]=='\t' || cc[i]>='0' && cc[i]<='9');i++);
                 if (i==cc.length)
                     continue;
                 ss=ss.substring(i);
+                int idx = ss.indexOf("\t");
+                if (idx!=-1)
+                    ss = ss.substring(0,idx);
                 parent.conn.insert(new DBStudent(ss,parent.groupItem.getId()));
                 }
             si.close();
